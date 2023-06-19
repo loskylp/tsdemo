@@ -1,4 +1,4 @@
-function add(numbers: string): number {
+export function add(numbers: string): number {
     let integers = numbers.split(',').map(x => parseInt(x));
     let negatives = integers.filter(x => x < 0);
 
@@ -10,5 +10,3 @@ function add(numbers: string): number {
         .reduce((a, b) => a + b, 0);
 }
 
-let result = add('1, 2, 4, 5');
-console.log(result);
