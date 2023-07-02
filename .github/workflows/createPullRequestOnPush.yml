@@ -3,7 +3,9 @@ name: Create Pull Request On Push
 
 on:
   push:
-    branches-ignore: main
+    branches-ignore: main  
+  workflow_dispatch:
+
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
  
