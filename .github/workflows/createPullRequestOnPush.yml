@@ -30,7 +30,7 @@ jobs:
         uses: devops-infra/action-pull-request@v0.5.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          title: $BRANCH_NAME
+          title: ${GITHUB_REF##*/}
           target_branch: main
           label: automatic,feature
           get_diff: true
