@@ -10,3 +10,7 @@ export function add(numbers: string): number {
         .reduce((a, b) => a + b, 0);
 }
 
+function del (numbers: string) : number {
+    throw new RangeError('Not Implemented') 
+}
+
