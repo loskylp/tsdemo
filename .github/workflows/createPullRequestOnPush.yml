@@ -10,6 +10,14 @@ env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
  
 jobs:
+  print_context:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          EVENT_CONTEXT: ${{ toJSON(github.event) }}
+        run: |
+          echo $EVENT_CONTEXT
+          
   action-pull-request:
     runs-on: ubuntu-latest
     steps:
