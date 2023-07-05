@@ -9,6 +9,10 @@ on:
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron:  '*/5 * * * *'
+  workflow_run:
+    workflows: ["Create Pull Request On Push"]
+    branches-ignore:
+      - "main"
 
 # The jobs this action will run. You can write as many jobs as you want.
 # For more detail on this section visit https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobs
