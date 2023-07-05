@@ -20,6 +20,8 @@ jobs:
     steps:
       - env:
           BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+        run: |
+          echo $BRANCH_NAME
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
