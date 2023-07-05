@@ -5,9 +5,6 @@ on:
   push:
     branches-ignore: main  
   workflow_dispatch:
-
-env:
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
  
 jobs:
   print_context:
@@ -21,6 +18,8 @@ jobs:
   action-pull-request:
     runs-on: ubuntu-latest
     steps:
+      - env:
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
