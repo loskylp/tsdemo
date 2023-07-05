@@ -6,13 +6,11 @@ name: Jest Automatic Testing
 # For more detail visit https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
   pull_request:
-  schedule:
-    # * is a special character in YAML so you have to quote this string
-    - cron:  '*/5 * * * *'
+    
   workflow_run:
     workflows: ["Create Pull Request On Push"]
-    branches-ignore:
-      - "main"
+    branches:
+      - "refs/remotes/pull/*/merge"
 
 # The jobs this action will run. You can write as many jobs as you want.
 # For more detail on this section visit https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobs
