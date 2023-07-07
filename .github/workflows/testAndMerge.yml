@@ -61,7 +61,7 @@ jobs:
       - name: Retrieve the ref to test
         env:
           HEAD_REF: ${{ github.head_ref }}
-          PR_NUMBER : ${{ needs.create-pull-request.outputs.pr_number }}
+          PR_NUMBER : ${{ needs.create-pull-request.outputs.pr_number || github.event.pull_request.number}}
           PR_URL : ${{ needs.create-pull-request.outputs.pr_url }}
         run: |
           echo "This is the value of github.head_ref $HEAD_REF\n"
@@ -70,7 +70,7 @@ jobs:
       - name: Checkout under $GITHUB_WORKSPACE
         uses: actions/checkout@v3
         with:
-          ref: refs/pull/${{ needs.create-pull-request.outputs.pr_number }}/merge
+          ref: refs/pull/${{ needs.create-pull-request.outputs.pr_number || github.event.pull_request.number }}/merge
           # refs/pull/${{ needs.create-pull-request.outputs.pr_number }}/merge     
       
       - name: Set up NodeJS
