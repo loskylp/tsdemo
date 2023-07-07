@@ -57,6 +57,11 @@ jobs:
     name: Jest Tests
     needs: create-pull-request
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: read
+      checks: write
+      pull-requests: write  
     steps:
       - name: Retrieve the ref to test
         env:
@@ -82,6 +87,15 @@ jobs:
 
       - name: Run Jest Tests
         run: npm run test
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            test-results/**/*.xml
+            test-results/**/*.trx
+            test-results/**/*.json
   
   
 
