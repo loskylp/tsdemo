@@ -1,0 +1,95 @@
+# Simple workflow for dealing with push and pull request on feature branches
+name: Test and Merge
+
+on:
+  push:
+    branches: 
+      - feature/*
+  pull_request:
+    branches:
+      - feature/*
+
+  workflow_dispatch:
+
+jobs:
+  print_context:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          EVENT_CONTEXT: ${{ toJSON(github.event) }}
+        run: |
+          echo $EVENT_CONTEXT
+
+  # we run this first step only if a push event triggered this workflow
+  create-pull-request:
+    if: github.ref_name
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Create Pull Request
+        id: create_pr
+        uses: devops-infra/action-pull-request@v0.5.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          title: Pull Request for ${{ github.ref_name }}
+          target_branch: main
+          label: automatic,feature
+          get_diff: true
+          template: .github/workflows/templates/pull_request_template.md
+
+  run-jest-tests:
+    name: Jest Tests
+    needs: create-pull-request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Retrieve the ref to test
+        run: |
+          echo "This is the value of github.head_ref ${{ github.head_ref}}\n"
+          echo "This is the value from PR Creation ${{ needs.create-pull-request.steps.create_pr.url}}\n"
+
+      - name: Checkout under $GITHUB_WORKSPACE
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref || needs.create-pull-request.steps.create_pr}}      
+      
+      - name: Set up NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Install all dependencies
+        run: npm ci
+
+      - name: Run Jest Tests
+        run: npm run test
+  
+  merge-the-pr:
+    name: Merge Pull Request on Passing Tests
+    needs: run-jest-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Retrieve the ref to test
+        run: |
+          echo "This is the value of github.head_ref ${{ github.head_ref}}\n"
+          echo "This is the value from PR Creation ${{ needs.create-pull-request.steps.create_pr.url}}\n"
+      - name: "Merge pull request"
+        uses: "actions/github-script@v5"
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          script: |
+            const pullRequest = context.payload.workflow_run.pull_requests[0]              
+            const repository = context.repo
+
+            await github.rest.pulls.merge({
+              merge_method: "merge",
+              owner: repository.owner,
+              pull_number: pullRequest.number,
+              repo: repository.repo,
+            })
+
+  
+
+    
