@@ -56,12 +56,7 @@ jobs:
   run-jest-tests:
     name: Jest Tests
     needs: create-pull-request
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      issues: read
-      checks: write
-      pull-requests: write  
+    runs-on: ubuntu-latest  
     steps:
       - name: Retrieve the ref to test
         env:
