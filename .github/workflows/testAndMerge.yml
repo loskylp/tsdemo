@@ -61,7 +61,7 @@ jobs:
           node-version: 14
 
       - name: Install all dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run Jest Tests
         run: npm run test
